@@ -29,9 +29,9 @@ public class main {
 			
 			String[] tokens = line.split("\\s+");
 			
-			if (tokens.length == 0)
+			if (tokens.length == 0 || tokens[0].length() == 0)
 				continue;
-			
+
 			if (vector == null) {
 				vector = new Matrix(tokens.length, 1);
 				matrix = new Matrix(tokens.length, tokens.length);
