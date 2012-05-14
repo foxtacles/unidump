@@ -60,7 +60,8 @@ public class main {
 			throw new Exception("read file: invalid file format");
 		
 		Matrix result = Algebra.gaussJordan(matrix, vector);
-		
+
 		System.out.println(result.toString());
+		System.out.println(Matrix.mult(matrix, result).toString());
 	}
 }

@@ -19,16 +19,17 @@ public class Rational {
 		
 		this.nom = nom;
 		this.denom = denom;
+		
+		this.reduce();
 	}
 	
 	/*
 	 * copy constructor
 	 */
 	
-	public Rational(Rational r)
+	public Rational(Rational r) throws Exception
 	{
-		this.nom = r.getNom();
-		this.denom = r.getDenom();
+		this(r.getNom(), r.getDenom());
 	}
 	
 	/*
@@ -81,6 +82,9 @@ public class Rational {
 	 */
 	
 	public void add(Rational r) {
+		if (r.getNom() == 0)
+			return;
+		
 		this.nom = (this.denom * r.getNom()) + (this.nom * r.getDenom());
 		this.denom = (this.denom * r.getDenom());
 	}
@@ -123,4 +127,20 @@ public class Rational {
 	public long getDenom() {
 		return this.denom;
 	}
+	
+	public void reduce() {
+		long gcf = gcf(this.nom, this.denom);
+		this.nom /= gcf;
+		this.denom /= gcf;
+	}
+	
+    private static long gcf(long n, long d)
+    {
+        if (n % d == 0)
+            return d;
+        else if (d % n == 0)
+            return n;
+        else
+            return gcf(n % d, d % n);
+    }
 }

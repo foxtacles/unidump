@@ -1,6 +1,6 @@
 package uebung2.algebra;
 
-public class Matrix {
+public class Matrix implements Cloneable {
 
 	/*
 	 * matrix array
@@ -86,8 +86,8 @@ public class Matrix {
 				
 				for (int p = 0; p < m1.getColumns(); ++p)
 					r.add(Rational.mult(m1.matrix[_n][p], m2.matrix[p][_k]));
-				
-				m.set(_n, _k, r);
+
+				m.set(_n + 1, _k + 1, r);
 			}
 		}
 			
@@ -124,13 +124,15 @@ public class Matrix {
 	public Object clone() {
 		try {
 			Matrix m = (Matrix) super.clone();
+
+			m.matrix = new Rational[this.n][this.k];
 			
 			for (int _n = 0; _n < this.n; ++_n)
 				for (int _k = 0; _k < this.k; ++_k)
-					m.matrix[_n][_k] = new Rational(m.matrix[_n][_k]);
-			
+					m.matrix[_n][_k] = new Rational(this.matrix[_n][_k]);
+
 			return m;
-		} catch (Exception e) { }
+		} catch (Exception e) { System.out.println(e); }
 		return this;
 	}
 	
