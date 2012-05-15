@@ -65,9 +65,6 @@ public class Algebra {
 					else 
 						A.set(i, j, Rational.sub(A.get(i, j), Rational.mult(A.get(k, j), quot.get(i, 1))));
 				}
-			}
-			
-			for (int i = 1; i <= vector.getRows(); ++i) {
 				
 				if (i == k)
 					continue;
