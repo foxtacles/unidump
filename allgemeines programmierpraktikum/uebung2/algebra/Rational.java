@@ -44,7 +44,7 @@ public class Rational {
 			return false;
 		}
 				
-		return (this.nom / r.getNom()) == (this.denom / r.getDenom());
+		return ((double) this.nom / r.getNom()) == ((double) this.denom / r.getDenom());
 	}
 	
 	public String toString() {
