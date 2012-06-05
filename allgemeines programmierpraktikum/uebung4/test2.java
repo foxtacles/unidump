@@ -2,28 +2,25 @@ package uebung4;
 
 import java.util.Iterator;
 
-import uebung3.exercise.algebra.number.CompRational;
-
-public class test1 {
+public class test2 {
 
 	public static void main(String[] args) throws Exception {
 
-		if (args.length % 2 != 0 || args.length < 2)
-			throw new Exception("Non-even count of numbers");
+		if (args.length < 1)
+			return;
 		
-		RedBlackTree<CompRational> tree = new RedBlackTree<CompRational>(new CompRational(Long.parseLong(args[0]), Long.parseLong(args[1])));
+		RedBlackTree<Integer> tree = new RedBlackTree<Integer>(new Integer(Integer.parseInt(args[0])));
 		
-		for (int i = 2; i < args.length; i += 2) {
-			Long N = Long.parseLong(args[i]);
-			Long D = Long.parseLong(args[i + 1]);
-			tree.add(new CompRational(N, D));
+		for (int i = 1; i < args.length; ++i) {
+			Integer I = Integer.parseInt(args[i]);
+			tree.add(I);
 		}
 
 		System.out.println("Schwarztiefe: " + tree.blackness());
 		
 		System.out.println("Forward iterator");
 		
-		Iterator<CompRational> iter = tree.iterator();
+		Iterator<Integer> iter = tree.iterator();
 		
 		while (iter.hasNext())
 			System.out.println(iter.next());
@@ -35,12 +32,12 @@ public class test1 {
 		while (iter.hasNext())
 			System.out.println(iter.next());
 		
-		System.out.println("Eliminate elements < 1");
+		System.out.println("Eliminate elements < 0");
 		
 		iter = tree.iterator();
 		
 		while (iter.hasNext())
-			if (iter.next().val() < 1.00)
+			if (iter.next() < 0)
 				iter.remove();
 		
 		iter = tree.iterator();

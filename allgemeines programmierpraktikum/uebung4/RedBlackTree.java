@@ -36,10 +36,10 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 			else
 				root.right = this;
 			
-			this.repair();
+			this.repair_insert();
 		}
 		
-		private void repair() throws Exception {
+		private void repair_insert() throws Exception {
 			// root is black or this is pure root, no fix required ("Fall 1")
 			if (root == null || !root.red)
 				return;
@@ -55,7 +55,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 				root.root.red = true;
 				root.root.left.red = false;
 				root.root.right.red = false;
-				root.root.repair();
+				root.root.repair_insert();
 				return;
 			}
 			
@@ -67,7 +67,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 				if (this == root.right) {
 					// this is right
 					root.lrot();
-					root.repair();
+					root.repair_insert();
 				}
 				else {
 					// this is left
@@ -82,7 +82,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 				if (this == root.left) {
 					// this is left
 					root.rrot();
-					root.repair();
+					root.repair_insert();
 				}
 				else {
 					// this is right
@@ -166,6 +166,127 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 					right.insert(value);
 			}
 		}
+		
+		public void remove() throws Exception {
+			
+			if (left == null && right == null) {
+				if (root == null)
+					origin.root = null;
+				else {
+					if (this == root.left)
+						root.left = null;
+					else
+						root.right = null;
+				}
+				
+				//if (!this.red)
+			}
+			else if (left == null || right == null) {
+				RedBlackNode tmp = (left != null ? left : right);
+				tmp.root = this.root;
+				
+				if (root == null)
+					origin.root = tmp;
+				else {
+					if (this == root.left)
+						root.left = tmp;
+					else
+						root.right = tmp;
+				}
+				
+				if (!this.red)
+					tmp.repair_remove();
+			}
+			else {
+				RedBlackNode tmp = right;
+				
+				while (tmp.left != null)
+					tmp = tmp.left;
+				
+				this.value = tmp.value;
+				tmp.remove();
+			}
+		}
+		
+		private void repair_remove() throws Exception {
+			
+			if (this == origin.root)
+				return;
+			
+			if (this.red) {
+				this.red = false;
+				return;
+			}
+			
+			if (this == root.right) {
+				if (root.left != null) {
+					
+					if (root.left.red) {
+						root.red = true;
+						root.left.red = false;
+						root.rrot();
+					}
+					
+					if (!root.left.left.red && !root.left.right.red) {
+						root.left.red = true;
+						root.repair_remove();
+					}
+					else {
+						if (root.left.right.red) {
+							root.right.red = true;
+							
+							root.left.right.red = false;
+							
+							root.left.lrot();
+						}
+						
+						if (root.left.left.red) {
+							boolean tmp = root.left.red;
+							root.left.red = root.red;
+							root.red = tmp;
+							
+							root.left.left.red = false;
+							
+							root.rrot();
+						}
+					}
+				}
+			}
+			else {
+				if (root.right != null) {
+					
+					if (root.right.red) {
+						root.red = true;
+						root.right.red = false;
+						root.lrot();
+					}
+					
+					if (!root.right.left.red && !root.right.right.red) {
+						root.right.red = true;
+						root.repair_remove();
+					}
+					else {
+						if (root.right.left.red) {
+							root.right.red = true;
+							
+							root.right.left.red = false;
+							
+							root.right.rrot();
+						}
+						
+						if (root.right.right.red) {
+							boolean tmp = root.right.red;
+							root.right.red = root.red;
+							root.red = tmp;
+							
+							root.right.right.red = false;
+							
+							root.lrot();
+						}
+					}
+				}
+			}
+		}
 
 		public boolean contains(T value) {
 			int q = value.compareTo(this.value);
@@ -241,7 +362,14 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 		}
 
 		public void remove() {
-
+			if (last == null)
+				throw new IllegalStateException();
+			
+			try {
+				last.remove();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -282,7 +410,14 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 		}
 
 		public void remove() {
-
+			if (last == null)
+				throw new IllegalStateException();
+			
+			try {
+				last.remove();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
