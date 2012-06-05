@@ -328,8 +328,8 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 		}
 		
 		public int blackness() {
-			int left = (this.left != null ? this.left.blackness() : 1);
-			int right = (this.right != null ? this.right.blackness() : 1);
+			int left = (this.left != null ? this.left.blackness() : 0);
+			int right = (this.right != null ? this.right.blackness() : 0);
 			
 			return (this.red ? 0 : 1) + (left > right ? left : right);
 		}
@@ -483,7 +483,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 	}
 	
 	public int blackness() {
-		return root != null ? root.blackness() : 0;
+		return root != null ? root.blackness() + 1 : 0;
 	}
 	
 	public String toString() {
