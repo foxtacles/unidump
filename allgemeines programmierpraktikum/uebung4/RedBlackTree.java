@@ -344,7 +344,10 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 		RedBlackNode last = null;
 		
 		public RedBlackForwardIter(RedBlackTree<T> tree) {
-			this.node = tree.root.getMinimum();
+			if (tree.root != null)
+				this.node = tree.root.getMinimum();
+			else
+				node = null;
 		}
 		
 		public boolean hasNext() {
@@ -392,7 +395,10 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 		RedBlackNode last = null;
 		
 		public RedBlackReverseIter(RedBlackTree<T> tree) {
-			this.node = tree.root.getMaximum();
+			if (tree.root != null)
+				this.node = tree.root.getMaximum();
+			else
+				node = null;
 		}
 		
 		public boolean hasNext() {
@@ -442,11 +448,16 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 	}
 	
 	public boolean add(T value) {
-		try {
-			root.insert(value);
-		}
-		catch (Exception e) { return false; }
 		
+		if (root == null)
+			root = new RedBlackNode(value, this);
+		else {
+			try {
+				root.insert(value);
+			}
+			catch (Exception e) { return false; }
+		}
+
 		return true;
 	}
 	
@@ -472,10 +483,10 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 	}
 	
 	public int blackness() {
-		return root.blackness();
+		return root != null ? root.blackness() : 0;
 	}
 	
 	public String toString() {
-		return root.toString();
+		return root != null ? root.toString() : "<empty>";
 	}
 }
