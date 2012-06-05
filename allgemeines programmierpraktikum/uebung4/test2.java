@@ -9,7 +9,7 @@ public class test2 {
 		if (args.length < 1)
 			return;
 		
-		RedBlackTree<Integer> tree = new RedBlackTree<Integer>(new Integer(Integer.parseInt(args[0])));
+		RedBlackTree<Integer> tree = new RedBlackTree<Integer>(Integer.parseInt(args[0]));
 		
 		for (int i = 1; i < args.length; ++i) {
 			Integer I = Integer.parseInt(args[i]);

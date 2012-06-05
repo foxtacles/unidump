@@ -169,6 +169,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 		
 		public void remove() throws Exception {
 			
+			// "Fall 1"
 			if (left == null && right == null) {
 				if (root == null)
 					origin.root = null;
@@ -181,6 +182,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 				
 				//if (!this.red)
 			}
+			// "Fall 2"
 			else if (left == null || right == null) {
 				RedBlackNode tmp = (left != null ? left : right);
 				tmp.root = this.root;
@@ -197,6 +199,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 				if (!this.red)
 					tmp.repair_remove();
 			}
+			// "Fall 3"
 			else {
 				RedBlackNode tmp = right;
 				
@@ -210,28 +213,33 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 		
 		private void repair_remove() throws Exception {
 			
+			// reached origin
 			if (this == origin.root)
 				return;
-			
+
 			if (this.red) {
 				this.red = false;
 				return;
 			}
 			
+			// "Fall 2"
 			if (this == root.right) {
 				if (root.left != null) {
 					
+					// 2.1
 					if (root.left.red) {
 						root.red = true;
 						root.left.red = false;
 						root.rrot();
 					}
 					
+					// 2.2
 					if (!root.left.left.red && !root.left.right.red) {
 						root.left.red = true;
 						root.repair_remove();
 					}
 					else {
+						// 2.3
 						if (root.left.right.red) {
 							root.right.red = true;
 							
@@ -240,6 +248,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 							root.left.lrot();
 						}
 						
+						// 2.4
 						if (root.left.left.red) {
 							boolean tmp = root.left.red;
 							root.left.red = root.red;
@@ -252,20 +261,24 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 					}
 				}
 			}
+			// "Fall 1"
 			else {
 				if (root.right != null) {
 					
+					// 1.1
 					if (root.right.red) {
 						root.red = true;
 						root.right.red = false;
 						root.lrot();
 					}
 					
+					// 1.2
 					if (!root.right.left.red && !root.right.right.red) {
 						root.right.red = true;
 						root.repair_remove();
 					}
 					else {
+						// 1.3
 						if (root.right.left.red) {
 							root.right.red = true;
 							
@@ -274,6 +287,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractCollection<T>
 							root.right.rrot();
 						}
 						
+						// 1.4
 						if (root.right.right.red) {
 							boolean tmp = root.right.red;
 							root.right.red = root.red;
