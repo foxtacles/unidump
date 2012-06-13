@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 const std::string newton = "x _ ((f) / (d))";
+const std::string secant = "y _ ((f_y) * ((y _ x) / ((f_y) _ (f_x))))";
 const unsigned int EVAL_PRECISION = 10;
 
 std::string str_replace(const std::string& source, const char* find, const char* replace)
@@ -50,6 +51,25 @@ long double eval(const std::string& expr)
 	x_str.precision(EVAL_PRECISION);
 	std::string result = expr;
 	size_t open, close;
+
+	while ((open = result.find_last_of("h")) != std::string::npos)
+	{
+		close = result.find_first_of("+_*/() ", open + 1);
+
+		x_str.seekg(0, std::ios::beg);
+		x_str.str(result.substr(open + 1, close == std::string::npos ? close : close - open - 1));
+
+		double e;
+		x_str >> e;
+
+		e = exp(e);
+
+		x_str.seekg(0, std::ios::beg);
+		x_str.str("");
+		x_str << e;
+
+		result.replace(open, close == std::string::npos ? close : close - open - 1, x_str.str());
+	}
 
 	while ((open = result.find_last_of("(")) != std::string::npos)
 	{
@@ -150,10 +170,55 @@ long double evalNewton(const std::string& f, const std::string& d, long double f
 	return evalGeneric(f, f_x, x, n, e, base);
 }
 
+long double evalSecant(const std::string& f, long double f_x, long double x, long double y, unsigned long long n, long double e)
+{
+	std::string base = secant;
+	std::string f_y = str_replace(f, "x", "y");
+
+	base = str_replace(base, "f_x", f.c_str());
+	base = str_replace(base, "f_y", f_y.c_str());
+
+	std::stringstream x_str, y_str;
+	x_str.precision(EVAL_PRECISION);
+	y_str.precision(EVAL_PRECISION);
+
+	x_str << x;
+	y_str << y;
+	long double x_n = x;
+	long double y_n = y;
+	unsigned long long i = 0;
+
+	while (i < n && !DoubleCompare(eval(str_replace(f, "x", y_str.str().c_str())), f_x, e))
+	{
+		std::string result = base;
+		result = str_replace(result, "x", x_str.str().c_str());
+		result = str_replace(result, "y", y_str.str().c_str());
+
+		x_n = y_n;
+		y_n = eval(result);
+
+		x_str.seekg(0, std::ios::beg);
+		x_str.str("");
+		x_str << x_n;
+
+		y_str.seekg(0, std::ios::beg);
+		y_str.str("");
+		y_str << y_n;
+
+		std::cout << "x_" << (i + 1) << ": " << y_n << "\n";
+
+		++i;
+	}
+
+	std::cout << "stopped after " << i << " iterations.\n\n";
+
+	return y_n;
+}
+
 inline
 bool isValidDerivative(const std::string& input)
 {
-	return (input.find_first_not_of("+_*/.0123456789x() ") == std::string::npos);
+	return (input.find_first_not_of("+_*/.0123456789xh() ") == std::string::npos);
 }
 
 inline
@@ -165,7 +230,7 @@ bool isValidFunction(const std::string& input)
 int main(int argc, char* argv[])
 {
 	std::cout << "Some quick and naive implementation of Newton's method\n----------------------------------------------------------\n";
-	std::cout << "allowed symbols are +, _, *, /, integers, floating point values and brackets, and one variable x\n";
+	std::cout << "allowed symbols are +, _, *, /, integers, floating point values, exponential function (examples: h4, hx), spaces, brackets, and one variable x\n";
 	std::cout << "please note that this tool doesn't care for precedence of multiplcation/division so PUT BRACKETS\n\n";
 	std::cout << "input your function: ";
 
@@ -210,7 +275,37 @@ int main(int argc, char* argv[])
 	std::cout << "input your initial value for x: ";
 
 	long double x;
-	std::cin >> x;
+	std::string _x;
+	std::getline(std::cin, _x, '\n');
+
+	if (_x.empty())
+	{
+		std::cout << "Error: No valid input";
+		return 0;
+	}
+	else
+	{
+		std::stringstream x_str;
+		x_str.precision(EVAL_PRECISION);
+		x_str.str(_x);
+		x_str >> x;
+	}
+
+	std::cout << "input your initial value for second x (only required for secant method): ";
+
+	long double y;
+	std::string _y;
+	std::getline(std::cin, _y, '\n');
+
+	if (_y.empty())
+		y = DBL_MAX;
+	else
+	{
+		std::stringstream y_str;
+		y_str.precision(EVAL_PRECISION);
+		y_str.str(_y);
+		y_str >> y;
+	}
 
 	std::cout << "input the number of iterations: ";
 
@@ -227,6 +322,8 @@ int main(int argc, char* argv[])
 	try {
 		if (!dinput.empty())
 			x_n = evalNewton(input, dinput, r, x, n, e);
+		else if (y != DBL_MAX)
+			x_n = evalSecant(input, r, x, y, n, e);
 		else
 			x_n = evalGeneric(input, r, x, n, e);
 		std::cout << "Result: " << x_n;
@@ -234,6 +331,10 @@ int main(int argc, char* argv[])
 	catch (std::runtime_error& e) {
 		std::cout << "Error: " << e.what();
 	}
+
+	std::cout << "\n";
+
+	system("PAUSE");
 
 	return 0;
 }
