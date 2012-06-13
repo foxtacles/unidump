@@ -334,7 +334,9 @@ int main(int argc, char* argv[])
 
 	std::cout << "\n";
 
+#ifdef __WIN32__
 	system("PAUSE");
+#endif
 
 	return 0;
 }
