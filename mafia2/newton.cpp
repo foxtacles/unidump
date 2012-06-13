@@ -242,7 +242,7 @@ int main(int argc, char* argv[])
 
 	if (!isValidFunction(input))
 	{
-		std::cout << "Error: No valid input";
+		std::cout << "Error: No valid input\n";
 		return 0;
 	}
 
@@ -252,7 +252,7 @@ int main(int argc, char* argv[])
 
 	if (!isValidDerivative(dinput))
 	{
-		std::cout << "Error: No valid input";
+		std::cout << "Error: No valid input\n";
 		return 0;
 	}
 
@@ -280,7 +280,7 @@ int main(int argc, char* argv[])
 
 	if (_x.empty())
 	{
-		std::cout << "Error: No valid input";
+		std::cout << "Error: No valid input\n";
 		return 0;
 	}
 	else
