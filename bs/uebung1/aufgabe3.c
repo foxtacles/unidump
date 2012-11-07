@@ -6,7 +6,7 @@
 #define MAX_PARAM 	4096
 #define MAX_PID		10
 
-unsigned int childs[MAX_PID] = {0};
+pid_t childs[MAX_PID] = {0};
 unsigned int childsPos = 0;
 
 int main(int argc, char** argv)
@@ -67,9 +67,9 @@ int main(int argc, char** argv)
 
 				if (PID == -1)
 				{
-                                        printf("Error forking process\n", c);
-                                        fclose(src);
-                                        return 0;
+					printf("Error forking process\n", c);
+					fclose(src);
+ 					return 0;
 				}
 				else if (!PID)
 				{
