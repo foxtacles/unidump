@@ -67,9 +67,9 @@ int main(int argc, char** argv)
 
 				if (PID == -1)
 				{
-					printf("Error forking process\n", c);
+					printf("Error forking process\n");
 					fclose(src);
- 					return 0;
+					return 0;
 				}
 				else if (!PID)
 				{
